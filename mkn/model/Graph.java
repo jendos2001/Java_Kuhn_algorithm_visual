@@ -9,8 +9,9 @@ public class Graph{
     private char[] first_share;
     private char[] second_share;
     private int[][] bipartition_matrix;
+    private boolean isBipart;
 
-    public Graph(int[][] gr, int n, char[] ver){
+    public Graph(int[][] gr, int n, char[] ver, boolean bipart){
         state = new int[n][n];
         for (int i = 0; i < n; i++)
             System.arraycopy(gr[i], 0, state[i], 0, n);
@@ -20,11 +21,13 @@ public class Graph{
         first_share = new char[num_V];
         second_share = new char[num_V];
         bipartition_matrix = new int[first_share.length][second_share.length];
+        isBipart = bipart;
         if(isBipartition()){
             System.out.print(first_share);
             System.out.println(" - first share");
             System.out.print(second_share);
             System.out.println(" - second share");
+            isBipart = true;
         }
         else{
             System.out.println("The graph is not bipartite!");
@@ -53,6 +56,10 @@ public class Graph{
             System.out.println();
         }
 
+    }
+
+    public boolean isBipart() {
+        return isBipart;
     }
 
     public int[][] getBipartition_matrix(){
