@@ -1,5 +1,6 @@
 package mkn.view;
 
+import mkn.model.*;
 import mkn.controller.*;
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -158,20 +159,25 @@ public class GUI extends JFrame implements View {
     }
 
     private void newDataAction(){ //Реакция на "Новые данные"
-        controller.deleteOld();                      //Сигнал об обнулении текущих данных
-        state = State.NO_DATA;                       //Изменение состояния
-        imageLabel.setIcon(new ImageIcon());         //Убирается картинка
+//        controller.deleteOld();                      //Сигнал об обнулении текущих данных
+//        state = State.NO_DATA;                       //Изменение состояния
+//        imageLabel.setIcon(new ImageIcon());         //Убирается картинка
         JFileChooser fileOpen = new JFileChooser();  //Диалоговое окно для открытия текстового файла с данным
         fileOpen.setFileFilter(new FileNameExtensionFilter("Текстовый файл, *.txt", "txt"));
         fileOpen.setAcceptAllFileFilterUsed(false);
         int ret = fileOpen.showDialog(null, "Открыть файл");
         if (ret == JFileChooser.APPROVE_OPTION) {
+            System.out.println("Файл выбран");
             File file = fileOpen.getSelectedFile();
-            if(controller.getNewData(file.getAbsolutePath())){
+
+/*            if(controller.getNewData(file.getAbsolutePath())){
                 state = State.START_ALGORITHM;
-            };
+            };*/
         }
-        checkState();
+        else{
+            System.out.println("Файл не выбран");
+        }
+//        checkState();
     }
 
     private JMenuBar makeMenuBar(){    //Инициализация меню
