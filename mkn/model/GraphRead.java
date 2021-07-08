@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
 
-public class Main {
+public class GraphRead {
 
-    public static void main(String[] args) throws IOException {
-	    FileReader file = new FileReader("test2.txt");
+    public static void read(String filename) throws IOException {
+	    FileReader file = new FileReader(filename);
 		Scanner scan = new Scanner(file);
 		ArrayList<String> aa = new ArrayList<>();
 	    while (scan.hasNextLine()){//read graph from file

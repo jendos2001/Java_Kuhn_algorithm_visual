@@ -80,31 +80,46 @@ public class Graph{
         chain[len_chain] = cur_index_V;
         len_chain++;
         while (not_look != 0){
+            if(cur_index_V == -1){//if graph is disconnected
+                for(int i = 0; i < tmp.length; i++){
+                    if (tmp[i] == 0){
+                        cur_index_V = i;
+                        not_look--;
+                        chain[len_chain] = cur_index_V;
+                        len_chain++;
+                        break;
+                    }
+                }
+            }
             tmp[cur_index_V] = cur_color;
             for(int i = 0; i < num_V; i++){
                 if(i != cur_index_V)
                     if(state[cur_index_V][i] == 1 && tmp[i] == cur_color) // check neighbors
                         return false;
-                    if(state[cur_index_V][i] == 1 && tmp[i] == 0){ // check unvisited neighbors
-                        not_look--;
-                        cur_index_V = i;
-                        cur_color = -cur_color;
-                        chain[num_V - not_look - 1] = cur_index_V;
-                        len_chain++;
-                        flag = true;
-                    }
+                if(state[cur_index_V][i] == 1 && tmp[i] == 0){ // check unvisited neighbors
+                    not_look--;
+                    cur_index_V = i;
+                    cur_color = -cur_color;
+                    chain[len_chain] = cur_index_V;
+                    len_chain++;
+                    flag = true;
+                }
                 if(flag)
                     break;
             }
             if(!flag){// rollback
                 cur_color = -cur_color;
-                cur_index_V = chain[len_chain - 2];
+                if(len_chain > 1)
+                    cur_index_V = chain[len_chain - 2];
+                else
+                    cur_index_V = -1;
                 chain[len_chain - 1] = -1;
                 len_chain--;
             }
             else
                 flag = false;
         }
+        tmp[cur_index_V] = cur_color;
         int size1 = 0;
         int size2 = 0;
         for(int i = 0; i < tmp.length; i++){

@@ -169,7 +169,12 @@ public class GUI extends JFrame implements View {
         if (ret == JFileChooser.APPROVE_OPTION) {
             System.out.println("Файл выбран");
             File file = fileOpen.getSelectedFile();
-
+            try{
+                GraphRead.read(file.getAbsolutePath());
+            }
+            catch (IOException e){
+                System.out.println("Файлу плохо((");
+            }
 /*            if(controller.getNewData(file.getAbsolutePath())){
                 state = State.START_ALGORITHM;
             };*/
