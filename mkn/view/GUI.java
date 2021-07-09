@@ -1,14 +1,14 @@
 package mkn.view;
 
-import mkn.model.*;
 import mkn.controller.*;
+import mkn.model.graph.GraphRead;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
@@ -35,9 +35,9 @@ public class GUI extends JFrame implements View {
     private Controller controller;                                                                           //Контроллер для отправки сигналов пользователя
 
     private enum State { NO_DATA,                                                                            //Состояния приложения в зависимости от итерации алгоритма
-                        START_ALGORITHM,
-                        MIDDLE_ALGORITHM,
-                        END_ALGORITHM};
+        START_ALGORITHM,
+        MIDDLE_ALGORITHM,
+        END_ALGORITHM};
     private State state = State.NO_DATA;
 
 
@@ -303,7 +303,17 @@ public class GUI extends JFrame implements View {
     }
 
     @Override
+    public void update() {
+
+    }
+
+    @Override
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+
+    @Override
+    public void exec() {
+        this.setVisible(true);
     }
 }
