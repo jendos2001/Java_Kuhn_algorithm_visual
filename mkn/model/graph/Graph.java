@@ -1,4 +1,4 @@
-package mkn.model;
+package mkn.model.graph;
 
 import java.util.Arrays;
 

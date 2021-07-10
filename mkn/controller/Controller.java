@@ -1,33 +1,25 @@
 package mkn.controller;
 
-/**
- * Интерфейс, контролирующий взаимодействие между GUI и алгоритмом
- */
+import mkn.model.algorithm.GraphAlgo;
+import mkn.view.View;
+
 public interface Controller {
+    void setView(View view);
+    void setAlgo(GraphAlgo<?> algo);
+
+    String getText();
+    String getPathToImage();
+
+    void update();
+
     /**
-     * Возвращение алгоритма в началное состояние
-     * @return путь до текствого файла с описанием графа
+     * Save current state of the algorithm
      */
+    void saveState();
+
     void toStart();
-
-    /**
-     * Прогнать алгоритм до конца
-     * @return массив путей до текстовых файлов с описанием состояний графа
-     */
     void toFinish();
-
-    /**
-     * Выполнить следующий шаг алгоритма
-     * @return путь до текствого файла с описанием графа
-     */
     boolean nextStep();
-
-    /**
-     * Вернуться к прошлому шагу алгоритма
-     * @return путь до текствого файла с описанием графа
-     */
     boolean prevStep();
-
     boolean getNewData(String path);
-    void deleteOld();
 }

@@ -1,20 +1,18 @@
 package mkn.view;
 
-import mkn.model.*;
 import mkn.controller.*;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 
 public class GUI extends JFrame implements View {
     private JMenu picture = new JMenu("Изображение");                                                       //Кнопки меню
-    private JMenuItem save = new JMenuItem("Сохранить изображение");
     private JMenu choose = new JMenu("Выбрать отображение");
     private JRadioButtonMenuItem full = new JRadioButtonMenuItem("Полное отображение", true);
     private JRadioButtonMenuItem scale = new JRadioButtonMenuItem("Масштаб. отображение", false);
@@ -35,9 +33,9 @@ public class GUI extends JFrame implements View {
     private Controller controller;                                                                           //Контроллер для отправки сигналов пользователя
 
     private enum State { NO_DATA,                                                                            //Состояния приложения в зависимости от итерации алгоритма
-                        START_ALGORITHM,
-                        MIDDLE_ALGORITHM,
-                        END_ALGORITHM};
+        START_ALGORITHM,
+        MIDDLE_ALGORITHM,
+        END_ALGORITHM};
     private State state = State.NO_DATA;
 
 
@@ -159,9 +157,6 @@ public class GUI extends JFrame implements View {
     }
 
     private void newDataAction(){ //Реакция на "Новые данные"
-//        controller.deleteOld();                      //Сигнал об обнулении текущих данных
-//        state = State.NO_DATA;                       //Изменение состояния
-//        imageLabel.setIcon(new ImageIcon());         //Убирается картинка
         JFileChooser fileOpen = new JFileChooser();  //Диалоговое окно для открытия текстового файла с данным
         fileOpen.setFileFilter(new FileNameExtensionFilter("Текстовый файл, *.txt", "txt"));
         fileOpen.setAcceptAllFileFilterUsed(false);
@@ -169,20 +164,15 @@ public class GUI extends JFrame implements View {
         if (ret == JFileChooser.APPROVE_OPTION) {
             System.out.println("Файл выбран");
             File file = fileOpen.getSelectedFile();
-            try{
-                GraphRead.read(file.getAbsolutePath());
-            }
-            catch (IOException e){
-                System.out.println("Файлу плохо((");
-            }
-/*            if(controller.getNewData(file.getAbsolutePath())){
+            if(controller.getNewData(file.getAbsolutePath())){
+                imageLabel.setIcon(new ImageIcon());         //Убирается картинка
                 state = State.START_ALGORITHM;
-            };*/
+            };
         }
         else{
             System.out.println("Файл не выбран");
         }
-//        checkState();
+        checkState();
     }
 
     private JMenuBar makeMenuBar(){    //Инициализация меню
@@ -193,36 +183,6 @@ public class GUI extends JFrame implements View {
         // размещаем все в нужном порядке
         choose.add(full);
         choose.add(scale);
-        save.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-/*                if (image.getHeight(null) != -1) {           //исправить
-                    JFileChooser fileSave = new JFileChooser();
-                    fileSave.setDialogTitle("Сохранение файла");
-                    // Определение режима - только файл
-                    fileSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                    fileSave.setFileFilter(new FileNameExtensionFilter("Изображение, *.png", "png"));
-                    fileSave.setAcceptAllFileFilterUsed(false);
-                    int result = fileSave.showSaveDialog(null);
-                    // Если файл выбран, то представим его в сообщении
-                    if (result == JFileChooser.APPROVE_OPTION){
-                        BufferedImage bimage = new BufferedImage(image.getWidth(null), image.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-                        Graphics2D bGr = bimage.createGraphics();
-                        bGr.drawImage(image, 0, 0, null);
-                        bGr.dispose();
-                        File outputFile = new File(fileSave.getSelectedFile().getAbsolutePath());
-                        try {
-                            ImageIO.write(bimage, "PNG", outputFile);
-                        } catch (IOException ioException) {
-                            ioException.printStackTrace();
-                        }
-                    }
-                        JOptionPane.showMessageDialog(null,
-                                "Файл '" + fileSave.getSelectedFile() +
-                                        " ) сохранен");
-                }*/
-            }
-        });
-        picture.add(save);
         picture.add(choose);
 
         JMenuBar bar = new JMenuBar();
@@ -239,7 +199,6 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(false);
                 toFinish.setEnabled(false);
                 newData.setEnabled(true);
-                save.setEnabled(false);
                 full.setEnabled(false);
                 scale.setEnabled(false);
                 break;
@@ -250,7 +209,6 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(false);
                 toFinish.setEnabled(true);
                 newData.setEnabled(true);
-                save.setEnabled(true);
                 full.setEnabled(true);
                 scale.setEnabled(true);
                 break;
@@ -261,7 +219,6 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(true);
                 toFinish.setEnabled(true);
                 newData.setEnabled(true);
-                save.setEnabled(true);
                 full.setEnabled(true);
                 scale.setEnabled(true);
                 break;
@@ -272,7 +229,6 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(true);
                 toFinish.setEnabled(false);
                 newData.setEnabled(true);
-                save.setEnabled(true);
                 full.setEnabled(true);
                 scale.setEnabled(true);
                 break;
@@ -283,13 +239,9 @@ public class GUI extends JFrame implements View {
     }
 
     @Override
-    public void setText(String text) {
-        info.setText(text);
-    }
-
-    @Override
-    public void setImage(String path) { //Изменение изображения
-        File file = new File(path);   //Инициализация файла
+    public void update() {
+        info.setText(controller.getText());
+        File file = new File(controller.getPathToImage());   //Инициализация файла
         try {
             image = ImageIO.read(file); //Чтение изображения
             imageLabel.setIcon(new ImageIcon(image));
@@ -305,5 +257,10 @@ public class GUI extends JFrame implements View {
     @Override
     public void setController(Controller controller) {
         this.controller = controller;
+    }
+
+    @Override
+    public void exec() {
+        this.setVisible(true);
     }
 }
