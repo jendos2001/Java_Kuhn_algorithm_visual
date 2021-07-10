@@ -12,13 +12,13 @@ public class CLI implements View {
     private int stepCount = 1;
 
     private String help = new String("\"--help\" | \"-h\" - Print all commands with descriptions\n" +
-                                            "\"--log\" | \"-l\" - Print all entered commands\n" +
-                                            "\"--new-data\" | \"-nd\" - Reading data from a file\n" +
-                                            "\"--to-start\" | \"-ts\" - Runs the algorithm to the start\n" +
-                                            "\"--to-finish\" | \"-tf\" - Runs the algorithm to the finish\n" +
-                                            "\"--next\" | \"-n\" - Starts the next step of the algorithm\n" +
-                                            "\"--prev\" | \"-p\" - Starts the previous step of the algorithm\n" +
-                                            "\"--exit\" | \"-e\" - Close program");
+            "\"--log\" | \"-l\" - Print all entered commands\n" +
+            "\"--new-data\" | \"-nd\" - Reading data from a file\n" +
+            "\"--to-start\" | \"-ts\" - Runs the algorithm to the start\n" +
+            "\"--to-finish\" | \"-tf\" - Runs the algorithm to the finish\n" +
+            "\"--next\" | \"-n\" - Starts the next step of the algorithm\n" +
+            "\"--prev\" | \"-p\" - Starts the previous step of the algorithm\n" +
+            "\"--exit\" | \"-e\" - Close program");
 
     private boolean toExit = false;
     private boolean isDataIn = false;
@@ -59,7 +59,7 @@ public class CLI implements View {
 
                 case "--log":
                 case "-l":
-                    if(log.isEmpty())
+                    if(log.length() == 0)
                         System.out.println("Log is empty");
                     else
                         System.out.println(log);
@@ -75,24 +75,30 @@ public class CLI implements View {
                         isDataIn = true;
                         System.out.println("Write vertex to start:");
                     }
+                    else
+                        System.out.println("Incorrect file or data");
                     break;
 
                 case "--to-start":
                 case "-ts":
-                    if(isDataIn) {
+                    if(isDataIn && !isStart) {
                         controller.toStart();
                         isStart = true;
                         isFinish = false;
                     }
+                    else
+                        System.out.println("There is no data to analyze or algorithm on start");
                     break;
 
                 case "--to-finish":
                 case "-tf":
-                    if(isDataIn) {
+                    if(isDataIn && !isFinish) {
                         controller.toFinish();
                         isStart = false;
                         isFinish = true;
                     }
+                    else
+                        System.out.println("There is no data to analyze or algorithm on finish");
                     break;
 
                 case "--next":
@@ -110,6 +116,8 @@ public class CLI implements View {
                             isStart = false;
                         }
                     }
+                    else
+                        System.out.println("There is no data to analyze");
                     break;
 
                 case "--prev":
@@ -127,6 +135,8 @@ public class CLI implements View {
                             isStart = false;
                         }
                     }
+                    else
+                        System.out.println("There is no data to analyze");
                     break;
 
                 case "--exit":

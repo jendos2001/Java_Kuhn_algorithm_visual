@@ -7,6 +7,7 @@ import mkn.model.command.NextStep;
 import mkn.model.command.PrevStep;
 import mkn.view.View;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -40,8 +41,8 @@ public class AlgoViewController implements Controller {
     }
 
     @Override
-    public String getPathToImage() {
-        return algo.getPathToImage();
+    public String getImage() {
+        return algo.getImage();
     }
 
     @Override
@@ -57,18 +58,19 @@ public class AlgoViewController implements Controller {
 
     @Override
     public void toStart() {
-        if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(0))); // Go to initial state//Type
-            algo.executeCmd();
-            prevStateIndex = -1; // Start from the beginning with same data
+//        if (prevStateIndex > -1) {
+//            algo.setCommand(new PrevStep(algo, states.get(0))); // Go to initial state
+//            algo.executeCmd();
+//            prevStateIndex = -1; // Start from the beginning with same data
+//        }
+        while (prevStateIndex > -1) {
+            prevStep();
         }
     }
 
     @Override
     public void toFinish() {
-        while (!algo.isEndReached()) {
-            nextStep();
-        }
+        while (!nextStep()) {}
     }
 
     @Override
@@ -82,7 +84,7 @@ public class AlgoViewController implements Controller {
     @Override
     public boolean prevStep() {
         if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state//Type
+            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state
             algo.executeCmd();
             prevStateIndex--;
         }
@@ -92,8 +94,12 @@ public class AlgoViewController implements Controller {
     @Override
     public boolean getNewData(String path) {
         if (algo.isDataCorrect(path)) {
-            algo.reset();
-            algo.readData(path);//Exception
+            try {
+                algo.readData(path);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                return false;
+            }
             return true;
         }
         return false;
