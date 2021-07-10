@@ -3,11 +3,14 @@ package mkn.model.algorithm;
 import mkn.controller.Controller;
 import mkn.model.command.Command;
 
+import java.io.IOException;
+
 public interface GraphAlgo<T> {
     void executeCmd();
+    void nextStep();
     boolean isEndReached();
     boolean isDataCorrect(String path);
-    void readData(String path);
+    GraphAlgo<T> readData(String path) throws IOException;
     void reset(); // Set to null all variables in the algorithm class
 
     String getText();
@@ -24,5 +27,5 @@ public interface GraphAlgo<T> {
      * in order to have access to private fields.
      * @param state current state of algorithm
      */
-    void restore(Snapshot state);
+    void restore(AlgoKuhn.AlgoSnapshot state);
 }

@@ -58,7 +58,7 @@ public class AlgoViewController implements Controller {
     @Override
     public void toStart() {
         if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(0))); // Go to initial state
+            algo.setCommand(new PrevStep(algo, states.get(0))); // Go to initial state//Type
             algo.executeCmd();
             prevStateIndex = -1; // Start from the beginning with same data
         }
@@ -82,7 +82,7 @@ public class AlgoViewController implements Controller {
     @Override
     public boolean prevStep() {
         if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state
+            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state//Type
             algo.executeCmd();
             prevStateIndex--;
         }
@@ -93,7 +93,7 @@ public class AlgoViewController implements Controller {
     public boolean getNewData(String path) {
         if (algo.isDataCorrect(path)) {
             algo.reset();
-            algo.readData(path);
+            algo.readData(path);//Exception
             return true;
         }
         return false;

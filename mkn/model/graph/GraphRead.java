@@ -27,12 +27,12 @@ public class GraphRead {
         int[][] b = makeMatrix(aa);//make adjacency matrix
         char[] ver_2 = makeV(aa);//make V in alphabet order
         int size = aa.size();
-        Graph gr = new Graph(b, size, ver_2, false);
+        /*Graph gr = new Graph(b, size, ver_2, false);
         AlgoKuhn alg = new AlgoKuhn(gr);
         if(gr.isBipart()){
             alg.Kuhn();
             alg.printMax_matching();
-        }
+        }*/
     }
 
     public static boolean isCorrect(String str){//correct string format: V:A B C...
