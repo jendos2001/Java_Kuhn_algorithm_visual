@@ -12,7 +12,8 @@ import java.io.File;
 import java.io.IOException;
 
 public class GUI extends JFrame implements View {
-    private JMenu picture = new JMenu("Изображение");                                                       //Кнопки меню
+    private JMenu program = new JMenu("Программа");                                                       //Кнопки меню
+    private JMenuItem logView = new JMenuItem("Отобразить лог");
     private JMenu choose = new JMenu("Выбрать отображение");
     private JRadioButtonMenuItem full = new JRadioButtonMenuItem("Полное отображение", true);
     private JRadioButtonMenuItem scale = new JRadioButtonMenuItem("Масштаб. отображение", false);
@@ -31,6 +32,9 @@ public class GUI extends JFrame implements View {
     private Image image;
 
     private Controller controller;                                                                           //Контроллер для отправки сигналов пользователя
+
+    private StringBuilder log = new StringBuilder();
+    private int stepCount = 1;
 
     private enum State { NO_DATA,                                                                            //Состояния приложения в зависимости от итерации алгоритма
         START_ALGORITHM,
@@ -153,6 +157,7 @@ public class GUI extends JFrame implements View {
         info.setPreferredSize(new Dimension(140, 140));
         info.setLineWrap(true);                //Активация переноса текста
         info.setWrapStyleWord(true);           //Перенос по словам
+        info.setEditable(false);
         this.add(info, constraints);
     }
 
@@ -180,13 +185,37 @@ public class GUI extends JFrame implements View {
         bg.add(full);
         bg.add(scale);
 
+        logView.addActionListener(new ActionListener() {                    //Добавление реакции на нажатие
+            public void actionPerformed(ActionEvent e) {
+                JFrame logWindow = new JFrame("Лог");
+                logWindow.setBounds(100, 100, 300, 500);    //Размеры и начальное расположение окна
+                logWindow.setResizable(false);
+
+                JTextArea logText = new JTextArea(log.toString());
+                logText.setEditable(false);
+                logText.setLineWrap(true);                //Активация переноса текста
+                logText.setWrapStyleWord(true);           //Перенос по словам
+
+                JScrollPane scrollPane = new JScrollPane(logText,
+                        JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,
+                        JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+                scrollPane.setMinimumSize(new Dimension(300, 500));
+                scrollPane.setPreferredSize(new Dimension(300, 500));
+                scrollPane.setMaximumSize(new Dimension(300, 500));
+
+                logWindow.add(scrollPane);
+                logWindow.setVisible(true);
+            }
+        });
+
         // размещаем все в нужном порядке
         choose.add(full);
         choose.add(scale);
-        picture.add(choose);
+        program.add(logView);
+        program.add(choose);
 
         JMenuBar bar = new JMenuBar();
-        bar.add(picture);
+        bar.add(program);
         bar.add(Box.createHorizontalGlue());
         return bar;
     }
@@ -240,7 +269,14 @@ public class GUI extends JFrame implements View {
 
     @Override
     public void update() {
-        info.setText(controller.getText());
+        String text = controller.getText();
+        info.setText(text);
+        log.append(stepCount);
+        log.append(") ");
+        log.append(text);
+        log.append("\n");
+        stepCount++;
+
         File file = new File(controller.getPathToImage());   //Инициализация файла
         try {
             image = ImageIO.read(file); //Чтение изображения

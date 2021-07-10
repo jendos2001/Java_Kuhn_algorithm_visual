@@ -75,24 +75,30 @@ public class CLI implements View {
                         isDataIn = true;
                         System.out.println("Write vertex to start:");
                     }
+                    else
+                        System.out.println("Incorrect file or data");
                     break;
 
                 case "--to-start":
                 case "-ts":
-                    if(isDataIn) {
+                    if(isDataIn && !isStart) {
                         controller.toStart();
                         isStart = true;
                         isFinish = false;
                     }
+                    else
+                        System.out.println("There is no data to analyze or algorithm on start");
                     break;
 
                 case "--to-finish":
                 case "-tf":
-                    if(isDataIn) {
+                    if(isDataIn && !isFinish) {
                         controller.toFinish();
                         isStart = false;
                         isFinish = true;
                     }
+                    else
+                        System.out.println("There is no data to analyze or algorithm on finish");
                     break;
 
                 case "--next":
@@ -110,6 +116,8 @@ public class CLI implements View {
                             isStart = false;
                         }
                     }
+                    else
+                        System.out.println("There is no data to analyze");
                     break;
 
                 case "--prev":
@@ -127,6 +135,8 @@ public class CLI implements View {
                             isStart = false;
                         }
                     }
+                    else
+                        System.out.println("There is no data to analyze");
                     break;
 
                 case "--exit":
