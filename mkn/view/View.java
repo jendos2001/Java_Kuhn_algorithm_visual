@@ -8,7 +8,7 @@ public interface View {
 
     void update();
 
-    void setController(Controller IController);
+    void setController(Controller controller);
 
     void exec();
 }

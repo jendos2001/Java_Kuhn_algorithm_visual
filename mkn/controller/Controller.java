@@ -7,6 +7,11 @@ public interface Controller {
     void setView(View view);
     void setAlgo(GraphAlgo<?> algo);
 
+    String getText();
+    String getPathToImage();
+
+    void update();
+
     /**
      * Save current state of the algorithm
      */
@@ -17,5 +22,4 @@ public interface Controller {
     boolean nextStep();
     boolean prevStep();
     boolean getNewData(String path);
-    void deleteOld();
 }

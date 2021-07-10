@@ -1,5 +1,6 @@
 package mkn.controller;
 
+import mkn.model.algorithm.AlgoKuhn;
 import mkn.model.algorithm.GraphAlgo;
 import mkn.model.algorithm.Snapshot;
 import mkn.model.command.NextStep;
@@ -34,17 +35,31 @@ public class AlgoViewController implements Controller {
     }
 
     @Override
+    public String getText() {
+        return algo.getText();
+    }
+
+    @Override
+    public String getPathToImage() {
+        return algo.getPathToImage();
+    }
+
+    @Override
+    public void update() {
+        view.update();
+    }
+
+    @Override
     public void saveState() {
-        states.add(algo.save());
-        prevStateIndex++;
+        states.add(algo.save()); // Save current state
+        prevStateIndex++; // Update variable
     }
 
     @Override
     public void toStart() {
         if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(0)));
+            algo.setCommand(new PrevStep(algo, states.get(0))); // Go to initial state
             algo.executeCmd();
-            view.update();
             prevStateIndex = -1; // Start from the beginning with same data
         }
     }
@@ -61,28 +76,26 @@ public class AlgoViewController implements Controller {
         saveState();
         algo.setCommand(new NextStep(algo));
         algo.executeCmd();
-        view.update();
         return algo.isEndReached();
     }
 
     @Override
     public boolean prevStep() {
         if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex)));
+            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state
             algo.executeCmd();
             prevStateIndex--;
-            view.update();
         }
         return prevStateIndex == -1;
     }
 
     @Override
     public boolean getNewData(String path) {
+        if (algo.isDataCorrect(path)) {
+            algo.reset();
+            algo.readData(path);
+            return true;
+        }
         return false;
-    }
-
-    @Override
-    public void deleteOld() {
-
     }
 }

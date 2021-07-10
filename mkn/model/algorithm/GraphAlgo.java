@@ -1,12 +1,20 @@
 package mkn.model.algorithm;
 
+import mkn.controller.Controller;
 import mkn.model.command.Command;
 
 public interface GraphAlgo<T> {
-    void setCommand(Command cmd);
     void executeCmd();
-
     boolean isEndReached();
+    boolean isDataCorrect(String path);
+    void readData(String path);
+    void reset(); // Set to null all variables in the algorithm class
+
+    String getText();
+    String getPathToImage();
+
+    void setCommand(Command cmd);
+    void setController(Controller controller);
 
     Snapshot save();
 
