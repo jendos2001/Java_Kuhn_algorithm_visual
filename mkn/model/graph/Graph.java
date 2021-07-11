@@ -40,7 +40,7 @@ public class Graph<T>{
         makeBipartitionMatrix();
     }
 
-    public void setIndexStartV(String V){
+    public void setIndexStartV(String V) {
         this.indexStartV = Arrays.binarySearch(this.V, V);
     }
 

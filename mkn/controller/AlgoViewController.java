@@ -37,6 +37,11 @@ public class AlgoViewController implements Controller {
     }
 
     @Override
+    public void setStartVertex(String sv) {
+        algo.getGraph().setIndexStartV(sv);
+    }
+
+    @Override
     public String getText() {
         return algo.getText();
     }

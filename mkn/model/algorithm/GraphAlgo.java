@@ -2,6 +2,7 @@ package mkn.model.algorithm;
 
 import mkn.controller.Controller;
 import mkn.model.command.Command;
+import mkn.model.graph.Graph;
 
 import java.io.IOException;
 
@@ -15,6 +16,7 @@ public interface GraphAlgo<T> {
 
     String getText();
     String getImage();
+    Graph<T> getGraph();
 
     void setCommand(Command cmd);
     void setController(Controller controller);

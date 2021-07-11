@@ -6,6 +6,7 @@ import mkn.view.View;
 public interface Controller {
     void setView(View view);
     void setAlgo(GraphAlgo<?> algo);
+    void setStartVertex(String sv);
 
     String getText();
     String getImage();

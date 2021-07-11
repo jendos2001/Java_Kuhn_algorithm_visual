@@ -22,7 +22,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class AlgoKuhn<T> implements GraphAlgo<T> {
-    private Graph graph;
+    private Graph<T> graph;
     private int [][] matrix;
     private boolean[] used; // Visit list
     private ArrayList<String> maxMatching = new ArrayList<>();
@@ -34,7 +34,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     public AlgoKuhn() {}
 
-    public void init(Graph g) {
+    public void init(Graph<T> g) {
         graph = g;
         mt = new int[graph.getSecond_share().length];
         Arrays.fill(mt, -1);
@@ -143,6 +143,10 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     @Override
     public void nextStep() {
+        if (graph.getIndexStartV() < 0) {
+            log.add("There is no your vertex");
+            controller.update();
+        }
         if(graph.getIndexStartV() <= 0){
             curStep++;
             Arrays.fill(used, false);
@@ -390,6 +394,11 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
         return "example/ex1i.png";
     }
+
+    @Override
+    public Graph<T> getGraph() {
+        return graph;
+    };
 
     @Override
     public void setCommand(Command cmd) {
