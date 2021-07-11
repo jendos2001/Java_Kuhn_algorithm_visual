@@ -10,7 +10,7 @@ public class Graph<T>{
     private String[] second_share = new String[1];
     private int[][] bipartition_matrix;
     private boolean isBipart;
-    private int indexStartV = 1;
+    private int indexStartV = 0;
     private boolean flagCheckStart = false;
 
     public Graph(int[][] gr, int n, String[] ver, boolean bipart){
@@ -50,6 +50,10 @@ public class Graph<T>{
 
     public boolean isFlagCheckStart() {
         return flagCheckStart;
+    }
+
+    public void setFlagCheckStart() {
+        this.flagCheckStart = true;
     }
 
     public boolean isBipart() {

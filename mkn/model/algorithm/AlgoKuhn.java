@@ -143,12 +143,33 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     @Override
     public void nextStep() {
-        curStep++;
-        Arrays.fill(used, false);
-        tryKuhn(curStep, matrix, used);
-        String tmp = graph.getFirst_share()[curStep];
-        log.add("Vertex " + tmp + " is processed");
-        controller.update();
+        if(graph.getIndexStartV() <= 0){
+            curStep++;
+            Arrays.fill(used, false);
+            tryKuhn(curStep, matrix, used);
+            String tmp = graph.getFirst_share()[curStep];
+            log.add("Vertex " + tmp + " is processed");
+            controller.update();
+        }
+        else{
+            curStep++;
+            Arrays.fill(used, false);
+            if(!graph.isFlagCheckStart()){
+                tryKuhn(graph.getIndexStartV(), matrix, used);
+                curStep--;
+                graph.setFlagCheckStart();
+            }
+            else{
+                if(curStep == graph.getIndexStartV())
+                    curStep++;
+                else
+                    tryKuhn(curStep, matrix, used);
+            }
+            String tmp = graph.getFirst_share()[curStep];
+            log.add("Vertex " + tmp + " is processed");
+            controller.update();
+        }
+
     }
 
     @Override
@@ -170,7 +191,9 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
                 String read_string = scan.nextLine();
                 boolean check = isCorrect(read_string);
                 if (!check){
-                    System.out.println("The file contains invalid data!");
+                    log.add("The file contains invalid data!");//!!!
+                    controller.update();
+                    //System.out.println("The file contains invalid data!");
                     return false;
                 }
                 aa.add(read_string);
