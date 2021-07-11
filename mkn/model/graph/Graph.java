@@ -23,10 +23,10 @@ public class Graph{
         bipartition_matrix = new int[first_share.length][second_share.length];
         isBipart = bipart;
         if(isBipartition()){
-            System.out.print(first_share);
-            System.out.println(" - first share");
-            System.out.print(second_share);
-            System.out.println(" - second share");
+//            System.out.print(first_share);
+//            System.out.println(" - first share");
+//            System.out.print(second_share);
+//            System.out.println(" - second share");
             isBipart = true;
         }
         else{

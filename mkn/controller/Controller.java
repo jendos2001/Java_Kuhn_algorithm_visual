@@ -8,7 +8,7 @@ public interface Controller {
     void setAlgo(GraphAlgo<?> algo);
 
     String getText();
-    String getPathToImage();
+    String getImage();
 
     void update();
 

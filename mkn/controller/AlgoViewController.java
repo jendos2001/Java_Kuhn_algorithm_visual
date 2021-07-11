@@ -7,7 +7,9 @@ import mkn.model.command.NextStep;
 import mkn.model.command.PrevStep;
 import mkn.view.View;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class controls interaction between View (GUI and CLI) and Model (Kuhn's algorithm)
@@ -16,7 +18,7 @@ import java.util.ArrayList;
 public class AlgoViewController implements Controller {
     private GraphAlgo<?> algo = null;
     private View view = null;
-    private ArrayList<Snapshot> states = new ArrayList<>();
+    private ArrayList<Snapshot> states = new ArrayList<>(0);
 
     /**
      * Index of the previous state in <code>states</code>
@@ -40,8 +42,8 @@ public class AlgoViewController implements Controller {
     }
 
     @Override
-    public String getPathToImage() {
-        return algo.getPathToImage();
+    public String getImage() {
+        return algo.getImage();
     }
 
     @Override
@@ -51,23 +53,38 @@ public class AlgoViewController implements Controller {
 
     @Override
     public void saveState() {
-        states.add(algo.save()); // Save current state
         prevStateIndex++; // Update variable
+        if (prevStateIndex == states.size()) {
+            states.add(algo.save()); // Save current state
+        } else {
+            states.set(prevStateIndex, algo.save());
+        }
     }
 
     @Override
     public void toStart() {
-        if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(0))); // Go to initial state//Type
-            algo.executeCmd();
-            prevStateIndex = -1; // Start from the beginning with same data
+//        if (prevStateIndex > -1) {
+//            algo.setCommand(new PrevStep(algo, states.get(0))); // Go to initial state
+//            algo.executeCmd();
+//            prevStateIndex = -1; // Start from the beginning with same data
+//        }
+        while (!prevStep()) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
     @Override
     public void toFinish() {
-        while (!algo.isEndReached()) {
-            nextStep();
+        while (!nextStep()) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
@@ -82,7 +99,7 @@ public class AlgoViewController implements Controller {
     @Override
     public boolean prevStep() {
         if (prevStateIndex > -1) {
-            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state//Type
+            algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state
             algo.executeCmd();
             prevStateIndex--;
         }
@@ -92,8 +109,12 @@ public class AlgoViewController implements Controller {
     @Override
     public boolean getNewData(String path) {
         if (algo.isDataCorrect(path)) {
-            algo.reset();
-            algo.readData(path);//Exception
+            try {
+                algo.readData(path);
+            } catch (IOException e) {
+                System.err.println(e.getMessage());
+                return false;
+            }
             return true;
         }
         return false;

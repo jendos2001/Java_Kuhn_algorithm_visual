@@ -10,11 +10,11 @@ public interface GraphAlgo<T> {
     void nextStep();
     boolean isEndReached();
     boolean isDataCorrect(String path);
-    GraphAlgo<T> readData(String path) throws IOException;
+    void readData(String path) throws IOException;
     void reset(); // Set to null all variables in the algorithm class
 
     String getText();
-    String getPathToImage();
+    String getImage();
 
     void setCommand(Command cmd);
     void setController(Controller controller);
@@ -27,5 +27,5 @@ public interface GraphAlgo<T> {
      * in order to have access to private fields.
      * @param state current state of algorithm
      */
-    void restore(AlgoKuhn.AlgoSnapshot state);
+    void restore(Snapshot state);
 }

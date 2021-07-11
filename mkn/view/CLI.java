@@ -12,13 +12,13 @@ public class CLI implements View {
     private int stepCount = 1;
 
     private String help = new String("\"--help\" | \"-h\" - Print all commands with descriptions\n" +
-                                            "\"--log\" | \"-l\" - Print all entered commands\n" +
-                                            "\"--new-data\" | \"-nd\" - Reading data from a file\n" +
-                                            "\"--to-start\" | \"-ts\" - Runs the algorithm to the start\n" +
-                                            "\"--to-finish\" | \"-tf\" - Runs the algorithm to the finish\n" +
-                                            "\"--next\" | \"-n\" - Starts the next step of the algorithm\n" +
-                                            "\"--prev\" | \"-p\" - Starts the previous step of the algorithm\n" +
-                                            "\"--exit\" | \"-e\" - Close program");
+            "\"--log\" | \"-l\" - Print all entered commands\n" +
+            "\"--new-data\" | \"-nd\" - Reading data from a file\n" +
+            "\"--to-start\" | \"-ts\" - Runs the algorithm to the start\n" +
+            "\"--to-finish\" | \"-tf\" - Runs the algorithm to the finish\n" +
+            "\"--next\" | \"-n\" - Starts the next step of the algorithm\n" +
+            "\"--prev\" | \"-p\" - Starts the previous step of the algorithm\n" +
+            "\"--exit\" | \"-e\" - Close program");
 
     private boolean toExit = false;
     private boolean isDataIn = false;
@@ -59,7 +59,7 @@ public class CLI implements View {
 
                 case "--log":
                 case "-l":
-                    if(log.isEmpty())
+                    if(log.length() == 0)
                         System.out.println("Log is empty");
                     else
                         System.out.println(log);

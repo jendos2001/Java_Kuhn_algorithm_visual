@@ -4,8 +4,7 @@ import mkn.controller.Controller;
 import mkn.model.command.Command;
 import mkn.model.graph.*;
 
-import java.awt.*;
-import java.awt.event.ContainerAdapter;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,35 +12,35 @@ import java.util.Arrays;
 import java.util.Scanner;
 
 
-public class AlgoKuhn<T> implements GraphAlgo<T>{
-    private Graph gr;
+public class AlgoKuhn<T> implements GraphAlgo<T> {
+    private Graph graph;
     private int [][] matrix;
-    private boolean[] used;//visit list
-    private ArrayList<String> max_matching = new ArrayList<>();
+    private boolean[] used; // Visit list
+    private ArrayList<String> maxMatching = new ArrayList<>();
     private ArrayList<String> log = new ArrayList<>();
-    static int curStep = 0;
-    int[] mt;//array of index for max matching (default = [-1,...,-1])
+    int curStep = 0;
+    int[] mt; // Array of index for max matching (default = [-1,...,-1])
     Command cmd;
     Controller controller;
-    public AlgoKuhn(Graph g){
-        gr = g;
-        mt = new int[gr.getSecond_share().length];
-        matrix = gr.getBipartition_matrix();
-        used = new boolean[gr.getFirst_share().length];
-        Arrays.fill(mt, -1);
-        log.add("Алгоритм инициализирован!");
-        controller.update();
 
+    public AlgoKuhn() {}
+
+    public void init(Graph g) {
+        graph = g;
+        mt = new int[graph.getSecond_share().length];
+        matrix = graph.getBipartition_matrix();
+        used = new boolean[graph.getFirst_share().length];
+        Arrays.fill(mt, -1);
+        maxMatching = new ArrayList<>();
+        curStep = 0;
+        log = new ArrayList<>();
+        log.add("Algorithm is initialized");
+
+        controller.update();
     }
 
-    /*public void Kuhn(){// Kuhn's algorithm
-        while (curStep < gr.getFirst_share().length) {
-            nextStep();
-        }
-
-    }*/
-
-    public boolean tryKuhn(int v, int[][] matrix, boolean[] used){//is it possible to find way
+    // Is it possible to find way?
+    public boolean tryKuhn(int v, int[][] matrix, boolean[] used) {
         if(used[v])
             return false;
         used[v] = true;
@@ -56,24 +55,25 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
         return false;
     }
 
-    public void makePair(){
-        char[] share1 = gr.getFirst_share();
-        char[] share2 = gr.getSecond_share();
+    public void makePair() {
+        char[] share1 = graph.getFirst_share();
+        char[] share2 = graph.getSecond_share();
         for(int i = 0; i < mt.length; i++){
             char[] tmp = new char[]{share1[mt[i]], ' ', share2[i]};
-            max_matching.add(new String(tmp));
+            maxMatching.add(new String(tmp));
         }
     }
 
-    public void printMax_matching(){
+    public void printMaxMatching() {
         makePair();
         System.out.println("Max matching:");
-        for (String s : max_matching) {
+        for (String s : maxMatching) {
             System.out.println(s);
         }
     }
 
-    public static int[][] makeMatrix(ArrayList<String> s){//make adjacency matrix
+    // Make adjacency matrix
+    public static int[][] makeMatrix(ArrayList<String> s) {
         int[][] matrix = new int[s.size()][s.size()];
         char[] V = makeV(s);
         for (String value : s) {
@@ -88,7 +88,8 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
         return matrix;
     }
 
-    public static char[] makeV(ArrayList<String> s){//make V in alphabet order
+    // Make V in alphabet order
+    public static char[] makeV(ArrayList<String> s) {
         char[] V = new char[s.size()];
         for (int i = 0; i < s.size(); i++)
             V[i] = s.get(i).charAt(0);
@@ -97,12 +98,12 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
     }
 
     @Override
-    public void nextStep(){
+    public void nextStep() {
         curStep++;
         Arrays.fill(used, false);
         tryKuhn(curStep, matrix, used);
-        char tmp = gr.getFirst_share()[curStep];
-        log.add("Обработана вершина!" + tmp);
+        char tmp = graph.getFirst_share()[curStep];
+        log.add("Vertex " + tmp + " is processed");
         controller.update();
     }
 
@@ -113,11 +114,31 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
 
     @Override
     public boolean isEndReached() {
-        return curStep == gr.getFirst_share().length;
+        return curStep + 1 == graph.getFirst_share().length;
     }
 
     @Override
-    public boolean isDataCorrect(String str) {//rewrite!
+    public boolean isDataCorrect(String path) { //rewrite!
+        try (FileReader file = new FileReader(path)) {
+            Scanner scan = new Scanner(file);
+            ArrayList<String> aa = new ArrayList<>();
+            while (scan.hasNextLine()){//read graph from file
+                String read_string = scan.nextLine();
+                boolean check = isCorrect(read_string);
+                if (!check){
+                    System.out.println("The file contains invalid data!");
+                    return false;
+                }
+                aa.add(read_string);
+            }
+        } catch (IOException e) {
+            System.err.println(e.getMessage());
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean isCorrect(String str){ //correct string format: V:A B C...
         if (str.length() % 2 == 0)
             return false;
         if (str.charAt(0) > 90 || str.charAt(0) < 65)// A..Z
@@ -140,36 +161,35 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
     }
 
     @Override
-    public AlgoKuhn<T> readData(String filename) throws IOException{//check!
+    public void readData(String filename) throws IOException {//check!
         try(FileReader file = new FileReader(filename)){
-            Scanner scan = new Scanner(filename);
+            Scanner scan = new Scanner(file);
             ArrayList<String> aa = new ArrayList<>();
             while (scan.hasNextLine()){//read graph from file
                 String read_string = scan.nextLine();
                 aa.add(read_string);
             }
-            file.close();
+
             int[][] b = makeMatrix(aa);//make adjacency matrix
             char[] ver_2 = makeV(aa);//make V in alphabet order
             int size = aa.size();
             Graph gr = new Graph(b, size, ver_2, false);
-            log.add("Данные прочитаны!");
+            log.add("Data is read");
             controller.update();
-            return new AlgoKuhn<>(gr);
+            init(gr);
         }
         catch (IOException e){
             System.out.println("IOException");
             e.printStackTrace();
         }
-        return null;
     }
 
     @Override
     public void reset() {
-        gr = null;
+        graph = null;
         matrix = null;
         used = null;//visit list
-        max_matching = new ArrayList<>();
+        maxMatching = new ArrayList<>();
         log = new ArrayList<>();
         curStep = 0;
         mt = null;//array of index for max matching (default = [-1,...,-1])
@@ -183,7 +203,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
     }
 
     @Override
-    public String getPathToImage() {
+    public String getImage() {
         return null;
     }
 
@@ -199,24 +219,26 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
 
     @Override
     public Snapshot save(){
-        return new AlgoSnapshot(gr, matrix, used, max_matching, log, curStep, mt, cmd, controller);
+        return new AlgoSnapshot(graph, matrix, used, maxMatching, log, curStep, mt, cmd, controller);
     }
 
     @Override
-    public void restore(AlgoKuhn.AlgoSnapshot state) {
-        this.gr = state.gr;
-        this.matrix = state.gr.getBipartition_matrix();
-        this.used = Arrays.copyOf(state.used, state.used.length);
-        this.max_matching = new ArrayList<>(state.max_matching);
-        this.log = new ArrayList<>(state.log);
-        this.curStep = state.curStep;
-        this.mt = Arrays.copyOf(state.mt, state.mt.length);
-        this.cmd = state.cmd;
-        this.controller = state.controller;
+    public void restore(Snapshot snap) {
+        AlgoKuhn.AlgoSnapshot snapshot = (AlgoKuhn.AlgoSnapshot) snap;
+        this.graph = snapshot.gr;
+        this.matrix = snapshot.gr.getBipartition_matrix();
+        this.used = Arrays.copyOf(snapshot.used, snapshot.used.length);
+        this.maxMatching = new ArrayList<>(snapshot.max_matching);
+        this.log = new ArrayList<>(snapshot.log);
+        curStep = snapshot.curStep;
+        this.mt = Arrays.copyOf(snapshot.mt, snapshot.mt.length);
+        this.cmd = snapshot.cmd;
+        // this.controller = snapshot.controller;
 
+        controller.update();
     }
 
-    public class AlgoSnapshot implements Snapshot{
+    public static class AlgoSnapshot implements Snapshot {
         private final Graph gr;
         private final int [][] matrix;
         private final boolean[] used;//visit list
@@ -225,18 +247,18 @@ public class AlgoKuhn<T> implements GraphAlgo<T>{
         private int curStep;
         int[] mt;//array of index for max matching (default = [-1,...,-1])
         Command cmd;
-        Controller controller;
-        public AlgoSnapshot(Graph gr, int[][] matrix, boolean[] used, ArrayList<String> max_matching, ArrayList<String> log,
-                            int curStep, int[] mt, Command cmd, Controller controller){
+        // Controller controller;
+        public AlgoSnapshot(Graph gr, int[][] matrix, boolean[] used, ArrayList<String> max_matching,
+                            ArrayList<String> log, int curStep, int[] mt, Command cmd, Controller controller) {
             this.gr = gr;
-            this.matrix = gr.getBipartition_matrix();//Bipartition_matrix is const
+            this.matrix = gr.getBipartition_matrix(); //Bipartition_matrix is const
             this.used = Arrays.copyOf(used, used.length);
             this.max_matching = new ArrayList<>(max_matching);
             this.log = new ArrayList<>(log);
             this.curStep = curStep;
             this.mt = Arrays.copyOf(mt, mt.length);
             this.cmd = cmd;
-            this.controller = controller;
+            // this.controller = controller;
         }
     }
 }

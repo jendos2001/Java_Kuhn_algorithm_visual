@@ -277,7 +277,7 @@ public class GUI extends JFrame implements View {
         log.append("\n");
         stepCount++;
 
-        File file = new File(controller.getPathToImage());   //Инициализация файла
+        File file = new File(controller.getImage());   //Инициализация файла
         try {
             image = ImageIO.read(file); //Чтение изображения
             imageLabel.setIcon(new ImageIcon(image));

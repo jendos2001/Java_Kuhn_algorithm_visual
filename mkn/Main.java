@@ -1,6 +1,7 @@
 package mkn;
 
 import mkn.controller.*;
+import mkn.model.algorithm.AlgoKuhn;
 import mkn.model.algorithm.GraphAlgo;
 import mkn.view.*;
 
@@ -29,10 +30,14 @@ public class Main {
         }
         else
             view = new GUI();
-        // GraphAlgo algo = new AlgoKuhn();
+
+        GraphAlgo<?> algo = new AlgoKuhn<Character>();
+
+        controller.setView(view);
+        controller.setAlgo(algo);
 
         view.setController(controller);
-        controller.setView(view);
+        algo.setController(controller);
 
         view.exec();
     }
