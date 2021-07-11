@@ -4,9 +4,7 @@ import mkn.controller.Controller;
 import mkn.model.command.Command;
 import mkn.model.graph.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
@@ -204,7 +202,14 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     @Override
     public String getImage() {
-        return null;
+        try (PrintWriter writer = new PrintWriter("./graph.gv")) {
+            writer.println("graph G");
+
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+            return "";
+        }
+        return "";
     }
 
     @Override
