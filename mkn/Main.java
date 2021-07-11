@@ -31,7 +31,7 @@ public class Main {
         else
             view = new GUI();
 
-        GraphAlgo<?> algo = new AlgoKuhn<Character>();
+        GraphAlgo<?> algo = new AlgoKuhn<String>();
 
         controller.setView(view);
         controller.setAlgo(algo);

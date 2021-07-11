@@ -80,11 +80,11 @@ public class AlgoViewController implements Controller {
     @Override
     public void toFinish() {
         while (!nextStep()) {
-//            try {
-//                TimeUnit.SECONDS.sleep(2);
-//            } catch (InterruptedException e) {
-//                System.out.println(e.getMessage());
-//            }
+            try {
+                TimeUnit.SECONDS.sleep(2);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
@@ -111,7 +111,9 @@ public class AlgoViewController implements Controller {
     public boolean getNewData(String path) {
         if (algo.isDataCorrect(path)) {
             try {
-                algo.readData(path);
+                if (!algo.readData(path)) {
+                    return false;
+                }
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 return false;

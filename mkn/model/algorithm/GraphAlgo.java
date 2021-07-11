@@ -10,7 +10,7 @@ public interface GraphAlgo<T> {
     void nextStep();
     boolean isEndReached();
     boolean isDataCorrect(String path);
-    void readData(String path) throws IOException;
+    boolean readData(String path) throws IOException;
     void reset(); // Set to null all variables in the algorithm class
 
     String getText();

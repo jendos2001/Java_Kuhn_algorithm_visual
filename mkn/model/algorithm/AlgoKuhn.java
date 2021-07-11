@@ -143,16 +143,12 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     @Override
     public void nextStep() {
-        //if(!graph.isFlagCheckStart()){
-        //if()
         curStep++;
         Arrays.fill(used, false);
         tryKuhn(curStep, matrix, used);
         String tmp = graph.getFirst_share()[curStep];
         log.add("Vertex " + tmp + " is processed");
         controller.update();
-        //}
-
     }
 
     @Override
@@ -194,11 +190,10 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         int start = m.start();
         int finish = m.end();
         return isMatch && start == 0 && finish == str.length();
-        return true;
     }
 
     @Override
-    public void readData(String filename) throws IOException {//check!
+    public boolean readData(String filename) throws IOException {//check!
         try(FileReader file = new FileReader(filename)){
             Scanner scan = new Scanner(file);
             ArrayList<String> aa = new ArrayList<>();
@@ -207,18 +202,23 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
                 aa.add(read_string);
             }
 
-            int[][] b = makeMatrix(aa);//make adjacency matrix
-            String[] ver_2 = makeV(aa);//make V in alphabet order
+            int[][] b = makeMatrix(aa); //make adjacency matrix
+            String[] ver_2 = makeV(aa); //make V in alphabet order
             int size = aa.size();
             Graph gr = new Graph<String>(b, size, ver_2, false);
-            log.add("Data is read");
-            controller.update();
+            if (!gr.isBipart()) {
+                return false;
+            }
+//            log.add("Data is read");
+//            controller.update();
             init(gr);
         }
         catch (IOException e){
             System.out.println("IOException");
             e.printStackTrace();
+            return false;
         }
+        return true;
     }
 
     @Override

@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class Graph<T>{
     private final int[][] state; //adjacency matrix
     private final int num_V; //number of V
-    private String[] V = new String[1]; // V in alphabet order
+    private String[] V; // V in alphabet order
     private String[] first_share = new String[1];
     private String[] second_share = new String[1];
     private int[][] bipartition_matrix;
