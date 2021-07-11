@@ -31,7 +31,7 @@ public class Graph<T>{
             isBipart = true;
         }
         else{
-            System.out.println("The graph is not bipartite!");
+            // System.out.println("The graph is not bipartite!");
             return;
         }
         bipartition_matrix = Arrays.copyOf(bipartition_matrix, first_share.length);

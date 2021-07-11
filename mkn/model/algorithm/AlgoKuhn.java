@@ -187,12 +187,12 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         try (FileReader file = new FileReader(path)) {
             Scanner scan = new Scanner(file);
             ArrayList<String> aa = new ArrayList<>();
-            while (scan.hasNextLine()){//read graph from file
+            while (scan.hasNextLine()) {//read graph from file
                 String read_string = scan.nextLine();
                 boolean check = isCorrect(read_string);
-                if (!check){
+                if (!check) {
                     log.add("The file contains invalid data!");//!!!
-                    controller.update();
+
                     //System.out.println("The file contains invalid data!");
                     return false;
                 }
@@ -230,6 +230,8 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
             int size = aa.size();
             Graph gr = new Graph<String>(b, size, ver_2, false);
             if (!gr.isBipart()) {
+                log.add("The graph is not bipartite!");
+
                 return false;
             }
 //            log.add("Data is read");
