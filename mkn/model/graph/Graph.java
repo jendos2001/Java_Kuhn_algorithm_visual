@@ -2,24 +2,24 @@ package mkn.model.graph;
 
 import java.util.Arrays;
 
-public class Graph{
+public class Graph<T>{
     private final int[][] state; //adjacency matrix
     private final int num_V; //number of V
-    private final char[] V; // V in alphabet order
-    private char[] first_share;
-    private char[] second_share;
+    private T[] V = null; // V in alphabet order
+    private T[] first_share = null;
+    private T[] second_share = null;
     private int[][] bipartition_matrix;
     private boolean isBipart;
 
-    public Graph(int[][] gr, int n, char[] ver, boolean bipart){
+    public Graph(int[][] gr, int n, T[] ver, boolean bipart){
         state = new int[n][n];
         for (int i = 0; i < n; i++)
             System.arraycopy(gr[i], 0, state[i], 0, n);
         num_V = n;
-        V = new char[n];
+        V = Arrays.copyOf(V, n);
         System.arraycopy(ver, 0, V, 0, num_V);
-        first_share = new char[num_V];
-        second_share = new char[num_V];
+        first_share = Arrays.copyOf(first_share, num_V);
+        second_share = Arrays.copyOf(second_share, num_V);
         bipartition_matrix = new int[first_share.length][second_share.length];
         isBipart = bipart;
         if(isBipartition()){
@@ -39,9 +39,9 @@ public class Graph{
         makeBipartitionMatrix();
     }
 
-    public void printMatrix(){
+    /*public void printMatrix(){
         System.out.print("  ");
-        for (char c : first_share) {
+        for (T c : first_share) {
             System.out.print(c);
             System.out.print(' ');
         }
@@ -56,7 +56,7 @@ public class Graph{
             System.out.println();
         }
 
-    }
+    }*/
 
     public boolean isBipart() {
         return isBipart;

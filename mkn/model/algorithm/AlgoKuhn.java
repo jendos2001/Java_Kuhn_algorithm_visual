@@ -8,6 +8,8 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 public class AlgoKuhn<T> implements GraphAlgo<T> {
@@ -73,24 +75,59 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
     // Make adjacency matrix
     public static int[][] makeMatrix(ArrayList<String> s) {
         int[][] matrix = new int[s.size()][s.size()];
-        char[] V = makeV(s);
-        for (String value : s) {
-            int coordX = Arrays.binarySearch(V, value.charAt(0));
-            for (int j = 2; j < value.length(); j += 2) {
-                int coordY = Arrays.binarySearch(V, value.charAt(j));
-                matrix[coordX][coordY] = 1;
-                matrix[coordY][coordX] = 1;
+        String[] V = makeV(s);
+        String tmp = "";
+        for (int i = 0; i < s.size(); i++){
+            int index = 0;
+            for(int j = 0; j < s.get(i).length(); j++){
+                if(s.get(i).charAt(j) != ' ')
+                    tmp = tmp + s.get(i).charAt(j);
+                else{
+                    index = j + 1;
+                    break;
+                }
             }
+            int coordX = Arrays.binarySearch(V, tmp);
+            tmp = "";
+
+            for(int j = index; j < s.get(i).length(); j++){
+                if(s.get(i).charAt(j) != ' ')
+                    tmp = tmp + s.get(i).charAt(j);
+                else{
+                    int coordY = Arrays.binarySearch(V, tmp);
+                    matrix[coordX][coordY] = 1;
+                    matrix[coordY][coordX] = 1;
+                    tmp = "";
+                }
+            }
+            int coordY = Arrays.binarySearch(V, tmp);
+            matrix[coordX][coordY] = 1;
+            matrix[coordY][coordX] = 1;
+            tmp = "";
         }
 
         return matrix;
     }
 
     // Make V in alphabet order
-    public static char[] makeV(ArrayList<String> s) {
-        char[] V = new char[s.size()];
-        for (int i = 0; i < s.size(); i++)
-            V[i] = s.get(i).charAt(0);
+    public static String[] makeV(ArrayList<String> s) {
+        String[] V = new String[1];
+        V = Arrays.copyOf(V, s.size());
+        for (int i = 0; i < s.size(); i++){
+            char[] tmp = new char[1];
+            int tmpSize = 0;
+            for(int j = 0; j < s.get(i).length(); j++){
+                if(s.get(i).charAt(j) != ' '){
+                    tmp = Arrays.copyOf(tmp, tmpSize + 1);
+                    tmp[tmpSize] = s.get(i).charAt(j);
+                    tmpSize++;
+                }
+                else
+                    break;
+            }
+            V[i] = new String(tmp);
+        }
+
         Arrays.sort(V);
         return V;
     }
@@ -137,25 +174,13 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
     }
 
     public static boolean isCorrect(String str){ //correct string format: V:A B C...
-        if (str.length() % 2 == 0)
-            return false;
-        if (str.charAt(0) > 90 || str.charAt(0) < 65)// A..Z
-            return false;
-        if (str.length() != 1){
-            if (str.charAt(1) != 58)
-                return false;
-            for (int i = 2; i < str.length(); i++){
-                if (i % 2 == 0) {
-                    if (str.charAt(i) > 90 || str.charAt(i) < 65)
-                        return false;
-                }
-                else {
-                    if (str.charAt(i) != 32)
-                        return false;
-                }
-            }
-        }
-        return true;
+        String pattern = "[A-Za-z0-9][\s[A-Za-z0-9]]*";
+        Pattern p = Pattern.compile(pattern);
+        Matcher m = p.matcher(str);
+        boolean isMatch = m.find();
+        int start = m.start();
+        int finish = m.end();
+        return isMatch && start == 0 && finish == str.length();
     }
 
     @Override
@@ -169,9 +194,9 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
             }
 
             int[][] b = makeMatrix(aa);//make adjacency matrix
-            char[] ver_2 = makeV(aa);//make V in alphabet order
+            String[] ver_2 = makeV(aa);//make V in alphabet order
             int size = aa.size();
-            Graph gr = new Graph(b, size, ver_2, false);
+            Graph gr = new Graph<String>(b, size, ver_2, false);
             log.add("Data is read");
             controller.update();
             init(gr);
