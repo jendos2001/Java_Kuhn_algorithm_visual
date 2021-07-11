@@ -9,6 +9,7 @@ import mkn.view.View;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 /**
  * This class controls interaction between View (GUI and CLI) and Model (Kuhn's algorithm)
@@ -17,7 +18,7 @@ import java.util.ArrayList;
 public class AlgoViewController implements Controller {
     private GraphAlgo<?> algo = null;
     private View view = null;
-    private ArrayList<Snapshot> states = new ArrayList<>();
+    private ArrayList<Snapshot> states = new ArrayList<>(0);
 
     /**
      * Index of the previous state in <code>states</code>
@@ -52,8 +53,12 @@ public class AlgoViewController implements Controller {
 
     @Override
     public void saveState() {
-        states.add(algo.save()); // Save current state
         prevStateIndex++; // Update variable
+        if (prevStateIndex == states.size()) {
+            states.add(algo.save()); // Save current state
+        } else {
+            states.set(prevStateIndex, algo.save());
+        }
     }
 
     @Override
@@ -63,14 +68,24 @@ public class AlgoViewController implements Controller {
 //            algo.executeCmd();
 //            prevStateIndex = -1; // Start from the beginning with same data
 //        }
-        while (prevStateIndex > -1) {
-            prevStep();
+        while (!prevStep()) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
         }
     }
 
     @Override
     public void toFinish() {
-        while (!nextStep()) {}
+        while (!nextStep()) {
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     @Override

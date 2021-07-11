@@ -18,7 +18,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
     private boolean[] used; // Visit list
     private ArrayList<String> maxMatching = new ArrayList<>();
     private ArrayList<String> log = new ArrayList<>();
-    static int curStep = 0;
+    int curStep = 0;
     int[] mt; // Array of index for max matching (default = [-1,...,-1])
     Command cmd;
     Controller controller;
@@ -31,7 +31,11 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         matrix = graph.getBipartition_matrix();
         used = new boolean[graph.getFirst_share().length];
         Arrays.fill(mt, -1);
+        maxMatching = new ArrayList<>();
+        curStep = 0;
+        log = new ArrayList<>();
         log.add("Algorithm is initialized");
+
         controller.update();
     }
 
@@ -229,8 +233,9 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         curStep = snapshot.curStep;
         this.mt = Arrays.copyOf(snapshot.mt, snapshot.mt.length);
         this.cmd = snapshot.cmd;
-        this.controller = snapshot.controller;
+        // this.controller = snapshot.controller;
 
+        controller.update();
     }
 
     public static class AlgoSnapshot implements Snapshot {
@@ -242,7 +247,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         private int curStep;
         int[] mt;//array of index for max matching (default = [-1,...,-1])
         Command cmd;
-        Controller controller;
+        // Controller controller;
         public AlgoSnapshot(Graph gr, int[][] matrix, boolean[] used, ArrayList<String> max_matching,
                             ArrayList<String> log, int curStep, int[] mt, Command cmd, Controller controller) {
             this.gr = gr;
@@ -253,7 +258,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
             this.curStep = curStep;
             this.mt = Arrays.copyOf(mt, mt.length);
             this.cmd = cmd;
-            this.controller = controller;
+            // this.controller = controller;
         }
     }
 }
