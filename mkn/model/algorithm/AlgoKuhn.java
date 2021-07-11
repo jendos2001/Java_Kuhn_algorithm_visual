@@ -1,5 +1,8 @@
 package mkn.model.algorithm;
 
+import guru.nidi.graphviz.attribute.Color;
+import guru.nidi.graphviz.attribute.Shape;
+import guru.nidi.graphviz.model.MutableNode;
 import mkn.controller.Controller;
 import mkn.model.command.Command;
 import mkn.model.graph.*;
@@ -8,9 +11,15 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
+
+import static guru.nidi.graphviz.model.Factory.*;
+import guru.nidi.graphviz.attribute.*;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.model.MutableGraph;
+import guru.nidi.graphviz.engine.Graphviz;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
 
 public class AlgoKuhn<T> implements GraphAlgo<T> {
     private Graph graph;
@@ -18,7 +27,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
     private boolean[] used; // Visit list
     private ArrayList<String> maxMatching = new ArrayList<>();
     private ArrayList<String> log = new ArrayList<>();
-    int curStep = 0;
+    int curStep = -1;
     int[] mt; // Array of index for max matching (default = [-1,...,-1])
     Command cmd;
     Controller controller;
@@ -28,11 +37,11 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
     public void init(Graph g) {
         graph = g;
         mt = new int[graph.getSecond_share().length];
+        Arrays.fill(mt, -1);
         matrix = graph.getBipartition_matrix();
         used = new boolean[graph.getFirst_share().length];
-        Arrays.fill(mt, -1);
         maxMatching = new ArrayList<>();
-        curStep = 0;
+        curStep = -1;
         log = new ArrayList<>();
         log.add("Algorithm is initialized");
 
@@ -135,13 +144,13 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
     @Override
     public void nextStep() {
         //if(!graph.isFlagCheckStart()){
-            //if()
-            curStep++;
-            Arrays.fill(used, false);
-            tryKuhn(curStep, matrix, used);
-            String tmp = graph.getFirst_share()[curStep];
-            log.add("Vertex " + tmp + " is processed");
-            controller.update();
+        //if()
+        curStep++;
+        Arrays.fill(used, false);
+        tryKuhn(curStep, matrix, used);
+        String tmp = graph.getFirst_share()[curStep];
+        log.add("Vertex " + tmp + " is processed");
+        controller.update();
         //}
 
     }
@@ -177,7 +186,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         return true;
     }
 
-    public static boolean isCorrect(String str){ //correct string format: V:A B C...
+    public static boolean isCorrect(String str) { //correct string format: V:A B C...
         String pattern = "[A-Za-z0-9][\s[A-Za-z0-9]]*";
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(str);
@@ -185,6 +194,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         int start = m.start();
         int finish = m.end();
         return isMatch && start == 0 && finish == str.length();
+        return true;
     }
 
     @Override
@@ -229,16 +239,131 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         return log.get(log.size() - 1);
     }
 
+//    private void printShareToGv(PrintWriter writer, String share) {
+//        for (int i = 0; i < graph.getFirst_share().length; ++i) {
+//            if (share.equals("fs"))
+//                writer.println("\t" + share + (char) i + " [label = \"" + graph.getFirst_share()[i] + "\", fillcolor=white");
+//        }
+//        writer.print("\t" + share + graph.getFirst_share()[0]);
+//        for (int i = 1; i < graph.getFirst_share().length; ++i) {
+//            writer.print("--" + share + graph.getFirst_share()[i]);
+//        }
+//    }
+
     @Override
     public String getImage() {
-        try (PrintWriter writer = new PrintWriter("./graph.gv")) {
-            writer.println("graph G");
+//        try (PrintWriter writer = new PrintWriter("./graph.gv")) {
+//            writer.println("graph G {");
+//            writer.println("\tsplines=false");
+//            writer.println("\tnode[shape=circle, style=filled]");
+//            // First share
+//            for (char v : graph.getFirst_share()) {
+//                writer.println("\t" + v + " [label = \"" + v + "\", fillcolor=white");
+//            }
+//            writer.print("\t" + graph.getFirst_share()[0]);
+//            for (int i = 1; i < graph.getFirst_share().length; ++i) {
+//                writer.print("--" + graph.getFirst_share()[i]);
+//            }
+//            writer.println(" [style=invis]");
+//            writer.println("\tsubgraph sg {");
+//            writer.println("\t\tcolor=invis\n\t}");
+//
+//            // Second share
+//            for (char v : graph.getSecond_share()) {
+//                writer.println("\t" + v + " [label = \"" + graph.getSecond_share()[i] + "\", fillcolor=white");
+//            }
+//            writer.print("\t" + graph.getSecond_share()[0]);
+//            for (int i = 1; i < graph.getSecond_share().length; ++i) {
+//                writer.print("--" + graph.getSecond_share()[i]);
+//            }
+//            writer.println();
+//
+//            // Edges
+//            for (int i = 0; i < mt.length; ++i) {
+//                if (mt[i] != -1) {
+//                    writer.println(graph.getFirst_share()[mt[i]] + "--" + graph.getSecond_share()[i] + "[constraint=false, color=red]");
+//                }
+//            }
+//
+//        } catch (IOException e) {
+//            System.out.println(e.getMessage());
+//            return "";
+//        }
+//        return "";
+        ArrayList<MutableNode> firstShare = new ArrayList<>(0);
+        ArrayList<MutableNode> secondShare = new ArrayList<>(0);
 
+        MutableGraph fs = mutGraph("First share").setDirected(false).use((grfs, ctxfs) -> {
+            // graphAttrs().add("constraint", "false");
+            for (String s : graph.getFirst_share()) {
+                firstShare.add(mutNode(s));
+            }
+            for (int i = 1; i < graph.getFirst_share().length; ++i) {
+                linkAttrs().add(Style.INVIS);
+                firstShare.get(i).addLink(firstShare.get(i - 1));
+            }
+        });
+
+        MutableGraph ss = mutGraph("Second share").setDirected(false).use((grfs, ctxfs) -> {
+            // graphAttrs().add("constraint", "false");
+            for (String s : graph.getSecond_share()) {
+                secondShare.add(mutNode(s));
+            }
+            for (int i = 1; i < graph.getSecond_share().length; ++i) {
+                linkAttrs().add(Style.INVIS);
+                secondShare.get(i).addLink(secondShare.get(i - 1));
+            }
+        });
+
+        MutableGraph gap = mutGraph("Gap").setDirected(false).use((grfs, ctxfs) -> {
+            // graphAttrs().add("constraint", "false");
+            nodeAttrs().add(Style.INVIS);
+            mutNode("gapNode");
+        });
+
+        MutableGraph g = mutGraph("Bipartite graph").setDirected(false).use((gr, ctx) -> {
+            nodeAttrs().add(Shape.CIRCLE);
+            graphAttrs().add("splines", "false");
+            linkAttrs().add("constraint", "false");
+
+            gr.add(fs).add(gap).add(ss);
+
+            boolean inProcess = false;
+            for (int i = 0; i < graph.getFirst_share().length; ++i) {
+                for (int j = 0; j < graph.getSecond_share().length; ++j) {
+                    if (graph.getBipartition_matrix()[i][j] == 1) {
+                        // linkAttrs().add("constraint", "false");
+                        if (mt[j] == i) {
+                            inProcess = true;
+                            linkAttrs().add(Color.RED);
+                            firstShare.get(i).addLink(secondShare.get(j));
+                            linkAttrs().add(Color.BLACK);
+                        } else {
+                            firstShare.get(i).addLink(secondShare.get(j));
+                        }
+                    }
+                }
+            }
+
+            if (inProcess) {
+                firstShare.get(curStep).add(Style.FILLED).add("fillcolor", "green");
+            }
+
+//            for (int i = 0; i < mt.length; ++i) {
+//                if (mt[i] != -1) {
+//                    linkAttrs().add("constraint", "false");
+//                    firstShare.get(mt[i]).links().get(i).add(Color.RED);
+//                    // firstShare.get(mt[i]).addLink(secondShare.get(i)).add(Color.RED);
+//                }
+//            }
+        });
+        try {
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("example/ex1i.png"));
         } catch (IOException e) {
-            System.out.println(e.getMessage());
-            return "";
+            e.printStackTrace();
         }
-        return "";
+
+        return "example/ex1i.png";
     }
 
     @Override
@@ -278,7 +403,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
         private final boolean[] used;//visit list
         private final ArrayList<String> max_matching;
         private final ArrayList<String> log;
-        private int curStep;
+        private final int curStep;
         int[] mt;//array of index for max matching (default = [-1,...,-1])
         Command cmd;
         // Controller controller;

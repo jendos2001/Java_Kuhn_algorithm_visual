@@ -170,7 +170,7 @@ public class GUI extends JFrame implements View {
             System.out.println("Файл выбран");
             File file = fileOpen.getSelectedFile();
             if(controller.getNewData(file.getAbsolutePath())){
-                imageLabel.setIcon(new ImageIcon());         //Убирается картинка
+                // imageLabel.setIcon(new ImageIcon());         //Убирается картинка
                 state = State.START_ALGORITHM;
             };
         }

@@ -80,11 +80,11 @@ public class AlgoViewController implements Controller {
     @Override
     public void toFinish() {
         while (!nextStep()) {
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                System.out.println(e.getMessage());
-            }
+//            try {
+//                TimeUnit.SECONDS.sleep(2);
+//            } catch (InterruptedException e) {
+//                System.out.println(e.getMessage());
+//            }
         }
     }
 
@@ -102,8 +102,9 @@ public class AlgoViewController implements Controller {
             algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state
             algo.executeCmd();
             prevStateIndex--;
+            return false;
         }
-        return prevStateIndex == -1;
+        return true;
     }
 
     @Override
@@ -115,6 +116,8 @@ public class AlgoViewController implements Controller {
                 System.err.println(e.getMessage());
                 return false;
             }
+            states = new ArrayList<>(0);
+            prevStateIndex = -1;
             return true;
         }
         return false;
