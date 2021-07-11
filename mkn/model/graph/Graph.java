@@ -5,19 +5,20 @@ import java.util.Arrays;
 public class Graph<T>{
     private final int[][] state; //adjacency matrix
     private final int num_V; //number of V
-    private T[] V = null; // V in alphabet order
-    private T[] first_share = null;
-    private T[] second_share = null;
+    private String[] V = new String[1]; // V in alphabet order
+    private String[] first_share = new String[1];
+    private String[] second_share = new String[1];
     private int[][] bipartition_matrix;
     private boolean isBipart;
+    private int indexStartV = 1;
+    private boolean flagCheckStart = false;
 
-    public Graph(int[][] gr, int n, T[] ver, boolean bipart){
+    public Graph(int[][] gr, int n, String[] ver, boolean bipart){
         state = new int[n][n];
         for (int i = 0; i < n; i++)
             System.arraycopy(gr[i], 0, state[i], 0, n);
         num_V = n;
-        V = Arrays.copyOf(V, n);
-        System.arraycopy(ver, 0, V, 0, num_V);
+        V = Arrays.copyOf(ver, n);
         first_share = Arrays.copyOf(first_share, num_V);
         second_share = Arrays.copyOf(second_share, num_V);
         bipartition_matrix = new int[first_share.length][second_share.length];
@@ -39,24 +40,17 @@ public class Graph<T>{
         makeBipartitionMatrix();
     }
 
-    /*public void printMatrix(){
-        System.out.print("  ");
-        for (T c : first_share) {
-            System.out.print(c);
-            System.out.print(' ');
-        }
-        System.out.println();
-        for (int i = 0; i < second_share.length; i++){
-            System.out.print(second_share[i]);
-            System.out.print(' ');
-            for (int j = 0; j < first_share.length; j++){
-                System.out.print(bipartition_matrix[j][i]);
-                System.out.print(' ');
-            }
-            System.out.println();
-        }
+    public void setIndexStartV(String V){
+        this.indexStartV = Arrays.binarySearch(this.V, V);
+    }
 
-    }*/
+    public int getIndexStartV() {
+        return indexStartV;
+    }
+
+    public boolean isFlagCheckStart() {
+        return flagCheckStart;
+    }
 
     public boolean isBipart() {
         return isBipart;
@@ -66,11 +60,11 @@ public class Graph<T>{
         return bipartition_matrix;
     }
 
-    public char[] getFirst_share() {
+    public String[] getFirst_share() {
         return first_share;
     }
 
-    public char[] getSecond_share() {
+    public String[] getSecond_share() {
         return second_share;
     }
 

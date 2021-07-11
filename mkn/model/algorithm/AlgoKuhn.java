@@ -56,11 +56,11 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
     }
 
     public void makePair() {
-        char[] share1 = graph.getFirst_share();
-        char[] share2 = graph.getSecond_share();
+        String[] share1 = graph.getFirst_share();
+        String[] share2 = graph.getSecond_share();
         for(int i = 0; i < mt.length; i++){
-            char[] tmp = new char[]{share1[mt[i]], ' ', share2[i]};
-            maxMatching.add(new String(tmp));
+            //String[] tmp = new String[]{};
+            maxMatching.add(new String(share1[mt[i]] + " " + share2[i]));
         }
     }
 
@@ -134,12 +134,16 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     @Override
     public void nextStep() {
-        curStep++;
-        Arrays.fill(used, false);
-        tryKuhn(curStep, matrix, used);
-        char tmp = graph.getFirst_share()[curStep];
-        log.add("Vertex " + tmp + " is processed");
-        controller.update();
+        //if(!graph.isFlagCheckStart()){
+            //if()
+            curStep++;
+            Arrays.fill(used, false);
+            tryKuhn(curStep, matrix, used);
+            String tmp = graph.getFirst_share()[curStep];
+            log.add("Vertex " + tmp + " is processed");
+            controller.update();
+        //}
+
     }
 
     @Override
