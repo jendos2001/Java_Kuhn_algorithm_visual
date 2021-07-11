@@ -50,6 +50,7 @@ public class CLI implements View {
     public void exec() {
         Scanner input = new Scanner(System.in);
         while(true){
+            System.out.print("Input command: ");
             String command = input.nextLine();
             switch(command.toLowerCase(Locale.ROOT)) {
                 case "--help":
@@ -74,6 +75,8 @@ public class CLI implements View {
                         isFinish = false;
                         isDataIn = true;
                         System.out.println("Write vertex to start:");
+                        String vertex = input.nextLine();
+                        controller.setStartVertex(vertex);
                     }
                     else
                         System.out.println("Incorrect file or data");
