@@ -2,24 +2,25 @@ package mkn.model.graph;
 
 import java.util.Arrays;
 
-public class Graph{
+public class Graph<T>{
     private final int[][] state; //adjacency matrix
     private final int num_V; //number of V
-    private final char[] V; // V in alphabet order
-    private char[] first_share;
-    private char[] second_share;
+    private String[] V; // V in alphabet order
+    private String[] first_share = new String[1];
+    private String[] second_share = new String[1];
     private int[][] bipartition_matrix;
     private boolean isBipart;
+    private int indexStartV = 0;
+    private boolean flagCheckStart = false;
 
-    public Graph(int[][] gr, int n, char[] ver, boolean bipart){
+    public Graph(int[][] gr, int n, String[] ver, boolean bipart){
         state = new int[n][n];
         for (int i = 0; i < n; i++)
             System.arraycopy(gr[i], 0, state[i], 0, n);
         num_V = n;
-        V = new char[n];
-        System.arraycopy(ver, 0, V, 0, num_V);
-        first_share = new char[num_V];
-        second_share = new char[num_V];
+        V = Arrays.copyOf(ver, n);
+        first_share = Arrays.copyOf(first_share, num_V);
+        second_share = Arrays.copyOf(second_share, num_V);
         bipartition_matrix = new int[first_share.length][second_share.length];
         isBipart = bipart;
         if(isBipartition()){
@@ -30,7 +31,7 @@ public class Graph{
             isBipart = true;
         }
         else{
-            System.out.println("The graph is not bipartite!");
+            // System.out.println("The graph is not bipartite!");
             return;
         }
         bipartition_matrix = Arrays.copyOf(bipartition_matrix, first_share.length);
@@ -39,23 +40,20 @@ public class Graph{
         makeBipartitionMatrix();
     }
 
-    public void printMatrix(){
-        System.out.print("  ");
-        for (char c : first_share) {
-            System.out.print(c);
-            System.out.print(' ');
-        }
-        System.out.println();
-        for (int i = 0; i < second_share.length; i++){
-            System.out.print(second_share[i]);
-            System.out.print(' ');
-            for (int j = 0; j < first_share.length; j++){
-                System.out.print(bipartition_matrix[j][i]);
-                System.out.print(' ');
-            }
-            System.out.println();
-        }
+    public void setIndexStartV(String V) {
+        this.indexStartV = Arrays.binarySearch(this.first_share, V);
+    }
 
+    public int getIndexStartV() {
+        return indexStartV;
+    }
+
+    public boolean isFlagCheckStart() {
+        return flagCheckStart;
+    }
+
+    public void setFlagCheckStart() {
+        this.flagCheckStart = true;
     }
 
     public boolean isBipart() {
@@ -66,11 +64,11 @@ public class Graph{
         return bipartition_matrix;
     }
 
-    public char[] getFirst_share() {
+    public String[] getFirst_share() {
         return first_share;
     }
 
-    public char[] getSecond_share() {
+    public String[] getSecond_share() {
         return second_share;
     }
 

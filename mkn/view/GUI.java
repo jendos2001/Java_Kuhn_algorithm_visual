@@ -14,9 +14,9 @@ import java.io.IOException;
 public class GUI extends JFrame implements View {
     private JMenu program = new JMenu("Программа");                                                       //Кнопки меню
     private JMenuItem logView = new JMenuItem("Отобразить лог");
-    private JMenu choose = new JMenu("Выбрать отображение");
+    /*private JMenu choose = new JMenu("Выбрать отображение");
     private JRadioButtonMenuItem full = new JRadioButtonMenuItem("Полное отображение", true);
-    private JRadioButtonMenuItem scale = new JRadioButtonMenuItem("Масштаб. отображение", false);
+    private JRadioButtonMenuItem scale = new JRadioButtonMenuItem("Масштаб. отображение", false);*/
 
     private JButton newData = new JButton("Новые данные");                                               //Кнопки на главном окне
     private JButton toStart = new JButton("В начало");
@@ -49,7 +49,8 @@ public class GUI extends JFrame implements View {
         this.setLayout(new GridBagLayout());
         this.setBounds(100, 100, 800, 800);    //Размеры и начальное расположение окна
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setMinimumSize(new Dimension(600, 600));
+        this.setMinimumSize(new Dimension(400, 400));
+
 
         checkState();
         makeWindowWithWidgets();
@@ -154,7 +155,7 @@ public class GUI extends JFrame implements View {
         constraints.gridx = 1;
         constraints.gridheight = 3;
         constraints.insets = new Insets(5, 5, 5, 5);
-        info.setPreferredSize(new Dimension(140, 140));
+        info.setPreferredSize(new Dimension(0, 0));
         info.setLineWrap(true);                //Активация переноса текста
         info.setWrapStyleWord(true);           //Перенос по словам
         info.setEditable(false);
@@ -170,9 +171,22 @@ public class GUI extends JFrame implements View {
             System.out.println("Файл выбран");
             File file = fileOpen.getSelectedFile();
             if(controller.getNewData(file.getAbsolutePath())){
-                imageLabel.setIcon(new ImageIcon());         //Убирается картинка
+                update();
+//                String vertex = JOptionPane.showInputDialog("Начальная вершина:");
+//                if(vertex == null)
+//                    vertex = "";
+//                controller.setStartVertex(vertex);
                 state = State.START_ALGORITHM;
-            };
+            }
+            else{
+                String text = controller.getText();      //Лог о некорректности файла
+                info.setText(text);
+                log.append(stepCount);
+                log.append(") ");
+                log.append(text);
+                log.append("\n");
+                stepCount++;
+            }
         }
         else{
             System.out.println("Файл не выбран");
@@ -181,9 +195,9 @@ public class GUI extends JFrame implements View {
     }
 
     private JMenuBar makeMenuBar(){    //Инициализация меню
-        ButtonGroup bg = new ButtonGroup();
+       /* ButtonGroup bg = new ButtonGroup();
         bg.add(full);
-        bg.add(scale);
+        bg.add(scale);*/
 
         logView.addActionListener(new ActionListener() {                    //Добавление реакции на нажатие
             public void actionPerformed(ActionEvent e) {
@@ -209,10 +223,10 @@ public class GUI extends JFrame implements View {
         });
 
         // размещаем все в нужном порядке
-        choose.add(full);
-        choose.add(scale);
+        //choose.add(full);
+        //choose.add(scale);
         program.add(logView);
-        program.add(choose);
+        //program.add(choose);
 
         JMenuBar bar = new JMenuBar();
         bar.add(program);
@@ -228,8 +242,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(false);
                 toFinish.setEnabled(false);
                 newData.setEnabled(true);
-                full.setEnabled(false);
-                scale.setEnabled(false);
+                //        full.setEnabled(false);
+                //        scale.setEnabled(false);
                 break;
 
             case START_ALGORITHM:
@@ -238,8 +252,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(false);
                 toFinish.setEnabled(true);
                 newData.setEnabled(true);
-                full.setEnabled(true);
-                scale.setEnabled(true);
+                //        full.setEnabled(true);
+                //         scale.setEnabled(true);
                 break;
 
             case MIDDLE_ALGORITHM:
@@ -248,8 +262,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(true);
                 toFinish.setEnabled(true);
                 newData.setEnabled(true);
-                full.setEnabled(true);
-                scale.setEnabled(true);
+                //        full.setEnabled(true);
+                //        scale.setEnabled(true);
                 break;
 
             case END_ALGORITHM:
@@ -258,8 +272,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(true);
                 toFinish.setEnabled(false);
                 newData.setEnabled(true);
-                full.setEnabled(true);
-                scale.setEnabled(true);
+                //        full.setEnabled(true);
+                //        scale.setEnabled(true);
                 break;
 
             default:
@@ -284,10 +298,11 @@ public class GUI extends JFrame implements View {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+//        imageLabel.setPreferredSize(new Dimension(0, 0));  //Настройки размеров изображения для работы полосок прокрутки
 
-        imageLabel.setPreferredSize(new Dimension(image.getWidth(null), image.getHeight(null)));  //Настройки размеров изображения для работы полосок прокрутки
-        imageScroll.setPreferredSize(imageLabel.getSize());
-        imageScroll.revalidate();
+        imageScroll.setPreferredSize(new Dimension(0,0));
+
+//        imageScroll.revalidate();
     }
 
     @Override

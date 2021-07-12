@@ -2,6 +2,7 @@ package mkn.model.algorithm;
 
 import mkn.controller.Controller;
 import mkn.model.command.Command;
+import mkn.model.graph.Graph;
 
 import java.io.IOException;
 
@@ -10,11 +11,12 @@ public interface GraphAlgo<T> {
     void nextStep();
     boolean isEndReached();
     boolean isDataCorrect(String path);
-    void readData(String path) throws IOException;
+    boolean readData(String path) throws IOException;
     void reset(); // Set to null all variables in the algorithm class
 
     String getText();
     String getImage();
+    Graph<T> getGraph();
 
     void setCommand(Command cmd);
     void setController(Controller controller);

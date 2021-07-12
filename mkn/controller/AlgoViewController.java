@@ -70,7 +70,7 @@ public class AlgoViewController implements Controller {
 //        }
         while (!prevStep()) {
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(0);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
@@ -81,7 +81,7 @@ public class AlgoViewController implements Controller {
     public void toFinish() {
         while (!nextStep()) {
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(-1);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
@@ -102,19 +102,24 @@ public class AlgoViewController implements Controller {
             algo.setCommand(new PrevStep(algo, states.get(prevStateIndex))); // Go to previous state
             algo.executeCmd();
             prevStateIndex--;
+            return false;
         }
-        return prevStateIndex == -1;
+        return true;
     }
 
     @Override
     public boolean getNewData(String path) {
         if (algo.isDataCorrect(path)) {
             try {
-                algo.readData(path);
+                if (!algo.readData(path)) {
+                    return false;
+                }
             } catch (IOException e) {
                 System.err.println(e.getMessage());
                 return false;
             }
+            states = new ArrayList<>(0);
+            prevStateIndex = -1;
             return true;
         }
         return false;
