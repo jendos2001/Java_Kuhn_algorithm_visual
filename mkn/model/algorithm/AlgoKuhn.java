@@ -143,37 +143,12 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     @Override
     public void nextStep() {
-        if (graph.getIndexStartV() < 0) {
-            log.add("There is no your vertex");
-            controller.update();
-        }
-        if(graph.getIndexStartV() <= 0){
-            curStep++;
-            Arrays.fill(used, false);
-            tryKuhn(curStep, matrix, used);
-            String tmp = graph.getFirst_share()[curStep];
-            log.add("Vertex " + tmp + " is processed");
-            controller.update();
-        }
-        else{
-            curStep++;
-            Arrays.fill(used, false);
-            if(!graph.isFlagCheckStart()){
-                tryKuhn(graph.getIndexStartV(), matrix, used);
-                curStep--;
-                graph.setFlagCheckStart();
-            }
-            else{
-                if(curStep == graph.getIndexStartV())
-                    curStep++;
-                else
-                    tryKuhn(curStep, matrix, used);
-            }
-            String tmp = graph.getFirst_share()[curStep];
-            log.add("Vertex " + tmp + " is processed");
-            controller.update();
-        }
-
+        curStep++;
+        Arrays.fill(used, false);
+        tryKuhn(curStep, matrix, used);
+        String tmp = graph.getFirst_share()[curStep];
+        log.add("Vertex " + tmp + " is processed");
+        controller.update();
     }
 
     @Override
@@ -232,7 +207,7 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
             int[][] b = makeMatrix(aa); //make adjacency matrix
             String[] ver_2 = makeV(aa); //make V in alphabet order
             int size = aa.size();
-            Graph gr = new Graph<String>(b, size, ver_2, false);
+            Graph<T> gr = new Graph<T>(b, size, ver_2, false);
             if (!gr.isBipart()) {
                 log.add("The graph is not bipartite!");
 
@@ -281,44 +256,6 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 
     @Override
     public String getImage() {
-//        try (PrintWriter writer = new PrintWriter("./graph.gv")) {
-//            writer.println("graph G {");
-//            writer.println("\tsplines=false");
-//            writer.println("\tnode[shape=circle, style=filled]");
-//            // First share
-//            for (char v : graph.getFirst_share()) {
-//                writer.println("\t" + v + " [label = \"" + v + "\", fillcolor=white");
-//            }
-//            writer.print("\t" + graph.getFirst_share()[0]);
-//            for (int i = 1; i < graph.getFirst_share().length; ++i) {
-//                writer.print("--" + graph.getFirst_share()[i]);
-//            }
-//            writer.println(" [style=invis]");
-//            writer.println("\tsubgraph sg {");
-//            writer.println("\t\tcolor=invis\n\t}");
-//
-//            // Second share
-//            for (char v : graph.getSecond_share()) {
-//                writer.println("\t" + v + " [label = \"" + graph.getSecond_share()[i] + "\", fillcolor=white");
-//            }
-//            writer.print("\t" + graph.getSecond_share()[0]);
-//            for (int i = 1; i < graph.getSecond_share().length; ++i) {
-//                writer.print("--" + graph.getSecond_share()[i]);
-//            }
-//            writer.println();
-//
-//            // Edges
-//            for (int i = 0; i < mt.length; ++i) {
-//                if (mt[i] != -1) {
-//                    writer.println(graph.getFirst_share()[mt[i]] + "--" + graph.getSecond_share()[i] + "[constraint=false, color=red]");
-//                }
-//            }
-//
-//        } catch (IOException e) {
-//            System.out.println(e.getMessage());
-//            return "";
-//        }
-//        return "";
         ArrayList<MutableNode> firstShare = new ArrayList<>(0);
         ArrayList<MutableNode> secondShare = new ArrayList<>(0);
 
@@ -387,12 +324,12 @@ public class AlgoKuhn<T> implements GraphAlgo<T> {
 //            }
         });
         try {
-            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("example/ex1i.png"));
+            Graphviz.fromGraph(g).render(Format.PNG).toFile(new File("graph.png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        return "example/ex1i.png";
+        return "graph.png";
     }
 
     @Override

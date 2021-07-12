@@ -37,11 +37,6 @@ public class AlgoViewController implements Controller {
     }
 
     @Override
-    public void setStartVertex(String sv) {
-        algo.getGraph().setIndexStartV(sv);
-    }
-
-    @Override
     public String getText() {
         return algo.getText();
     }
@@ -75,7 +70,7 @@ public class AlgoViewController implements Controller {
 //        }
         while (!prevStep()) {
             try {
-                TimeUnit.SECONDS.sleep(1);
+                TimeUnit.SECONDS.sleep(0);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }
@@ -86,7 +81,7 @@ public class AlgoViewController implements Controller {
     public void toFinish() {
         while (!nextStep()) {
             try {
-                TimeUnit.SECONDS.sleep(2);
+                TimeUnit.SECONDS.sleep(-1);
             } catch (InterruptedException e) {
                 System.out.println(e.getMessage());
             }

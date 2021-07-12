@@ -172,10 +172,10 @@ public class GUI extends JFrame implements View {
             File file = fileOpen.getSelectedFile();
             if(controller.getNewData(file.getAbsolutePath())){
                 update();
-                String vertex = JOptionPane.showInputDialog("Начальная вершина:");
-                if(vertex == null)
-                    vertex = "";
-                controller.setStartVertex(vertex);
+//                String vertex = JOptionPane.showInputDialog("Начальная вершина:");
+//                if(vertex == null)
+//                    vertex = "";
+//                controller.setStartVertex(vertex);
                 state = State.START_ALGORITHM;
             }
             else{
@@ -242,8 +242,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(false);
                 toFinish.setEnabled(false);
                 newData.setEnabled(true);
-        //        full.setEnabled(false);
-        //        scale.setEnabled(false);
+                //        full.setEnabled(false);
+                //        scale.setEnabled(false);
                 break;
 
             case START_ALGORITHM:
@@ -252,8 +252,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(false);
                 toFinish.setEnabled(true);
                 newData.setEnabled(true);
-        //        full.setEnabled(true);
-       //         scale.setEnabled(true);
+                //        full.setEnabled(true);
+                //         scale.setEnabled(true);
                 break;
 
             case MIDDLE_ALGORITHM:
@@ -262,8 +262,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(true);
                 toFinish.setEnabled(true);
                 newData.setEnabled(true);
-        //        full.setEnabled(true);
-        //        scale.setEnabled(true);
+                //        full.setEnabled(true);
+                //        scale.setEnabled(true);
                 break;
 
             case END_ALGORITHM:
@@ -272,8 +272,8 @@ public class GUI extends JFrame implements View {
                 toStart.setEnabled(true);
                 toFinish.setEnabled(false);
                 newData.setEnabled(true);
-        //        full.setEnabled(true);
-        //        scale.setEnabled(true);
+                //        full.setEnabled(true);
+                //        scale.setEnabled(true);
                 break;
 
             default:
@@ -298,12 +298,10 @@ public class GUI extends JFrame implements View {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
-        System.out.println(image.getWidth(null));
-        System.out.println(image.getHeight(null));
 //        imageLabel.setPreferredSize(new Dimension(0, 0));  //Настройки размеров изображения для работы полосок прокрутки
-        System.out.println(imageLabel.getSize());
+
         imageScroll.setPreferredSize(new Dimension(0,0));
-        System.out.println(imageScroll.getSize());
+
 //        imageScroll.revalidate();
     }
 

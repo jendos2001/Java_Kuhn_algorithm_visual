@@ -41,7 +41,7 @@ public class Graph<T>{
     }
 
     public void setIndexStartV(String V) {
-        this.indexStartV = Arrays.binarySearch(this.V, V);
+        this.indexStartV = Arrays.binarySearch(this.first_share, V);
     }
 
     public int getIndexStartV() {

@@ -74,9 +74,9 @@ public class CLI implements View {
                         isStart = true;
                         isFinish = false;
                         isDataIn = true;
-                        System.out.println("Write vertex to start:");
-                        String vertex = input.nextLine();
-                        controller.setStartVertex(vertex);
+//                        System.out.println("Write vertex to start:");
+//                        String vertex = input.nextLine();
+//                        controller.setStartVertex(vertex);
                     }
                     else
                         System.out.println("Incorrect file or data");
